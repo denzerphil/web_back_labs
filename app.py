@@ -1,7 +1,6 @@
 from flask import Flask, url_for, request, redirect
 import datetime
 app = Flask(__name__)
-
 @app.route("/web")
 def web():
     return """<!doctype html> \
@@ -25,6 +24,9 @@ def author ():
                 <a href="/web">web</a>
             </body>
         </html>"""
+@app.route("/info")
+def info():
+    return redirect("/author")
 @app.route('/image')
 def image():
     path = url_for("static", filename="oak.jpg")
@@ -37,9 +39,7 @@ def image():
     </body>
 </html>
 '''
-
 count = 0
-
 @app.route('/counter')
 def counter():
     global count
@@ -59,3 +59,5 @@ def counter():
     </body>
 </html>
 '''
+if __name__ == '__main__':
+    app.run(debug=True)
