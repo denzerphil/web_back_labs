@@ -183,37 +183,64 @@ def teapot():
 
 @app.errorhandler(404)
 def not_found_error(error):
-    return '''
+    # Получаем URL для картинки 404.webp
+    image_url = url_for('static', filename='404.webp')
+    
+    return f'''
 <!doctype html>
 <html>
     <head>
         <title>404 - Страница не найдена</title>
         <style>
-            body {
+            body {{
                 background-color: #ffe6e6;
                 font-family: Arial, sans-serif;
                 text-align: center;
                 padding: 50px;
-            }
-            .error-code {
+                color: #333;
+            }}
+            .error-code {{
                 font-size: 72px;
                 color: #cc0000;
-            }
-            .message {
+                margin-bottom: 20px;
+            }}
+            .message {{
                 font-size: 24px;
                 margin: 20px 0;
-            }
-            img {
-                max-width: 300px;
+                color: #666;
+            }}
+            .error-image {{
+                max-width: 400px;
+                width: 100%;
+                height: auto;
+                border-radius: 10px;
+                box-shadow: 0 4px 8px rgba(0,0,0,0.2);
                 margin: 20px 0;
-            }
+            }}
+            .home-link {{
+                display: inline-block;
+                margin-top: 20px;
+                padding: 10px 20px;
+                background-color: #cc0000;
+                color: white;
+                text-decoration: none;
+                border-radius: 5px;
+                transition: background-color 0.3s;
+            }}
+            .home-link:hover {{
+                background-color: #a30000;
+            }}
         </style>
     </head>
     <body>
         <div class="error-code">404</div>
         <div class="message">Упс! Страница не найдена</div>
-        <img src="https://via.placeholder.com/300x200/cc0000/ffffff?text=404+Error" alt="Ошибка 404">
-        <p>Запрашиваемая страница не существует. Проверьте URL или вернитесь на <a href="/">главную страницу</a>.</p>
+        
+        <!-- Картинка 404.webp -->
+        <img src="{image_url}" alt="Ошибка 404 - Страница не найдена" class="error-image">
+        
+        <p>Запрашиваемая страница не существует. Проверьте URL или вернитесь на главную страницу.</p>
+        <a href="/" class="home-link">Вернуться на главную страницу</a>
     </body>
 </html>
 ''', 404
