@@ -9,15 +9,18 @@ def not_found (err):
 
 @app.route("/web")
 def web():
-    return """<!doctype html> \
-        <html> \
-            <body> \
-               <h1>web-сервер на flask</h1> \
-               <a href="/author">author</a> \
-               <a href="/info">info</a> \
-               <a href="/counter">counter</a> \
-            </body> \
-        </html>"""
+    return """<!doctype html> 
+        <html> 
+            <body> 
+               <h1>web-сервер на flask</h1> 
+               <a href="/author">author</a> 
+               <a href="/info">info</a> 
+               <a href="/counter">counter</a> 
+            </body> 
+        </html>""", 200, {
+            'X-Server': 'sample',
+            'Content-Type': 'text/plain; charset=utf-8'
+        }
 
 @app.route("/info")
 def info():
@@ -25,7 +28,7 @@ def info():
 
 @app.route("/author")
 def author():
-    name = "Филиппов Денис Макисмович"
+    name = "Филиппов Денис Максимович"
     group = "ФБИ-33"
     faculty = "Бизнес-информатика"
     return f"""<!doctype html>
@@ -67,7 +70,6 @@ def created():
 <!doctype html>
 <html>
     <body>
-        Сколько раз вы сюда заходили: {count}
         <h1>Создано успешно</h1>
         <div><i>что-то создано...</i></div>
     </body>
