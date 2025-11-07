@@ -291,3 +291,11 @@ def image_with_headers():
 
 if __name__ == '__main__':
     app.run(debug=False)  
+
+@app.route ('/lab2/a')
+def a():
+    return 'без слеша'
+
+@app.route ('/lab2/a/')
+def a2():
+    return 'со слешем'
