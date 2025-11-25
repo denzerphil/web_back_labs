@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block lab %}Ягоды{% endblock %}
+
+{% block main %}
+    <h1>Каталог ягод</h1>
+    <div class="berries-container">
+        {% for berry in berries %}
+        <div class="berry-card">
+            <div class="berry-image">
+                <img src="{{ url_for('static', filename=berry.image) }}" 
+                     alt="{{ berry.name }}"
+                     width="200" height="150">
+            </div>
+            <div class="berry-info">
+                <h3>{{ berry.name }}</h3>
+                <p class="description">{{ berry.description }}</p>
+                <p class="season"><strong>Сезон созревания:</strong> {{ berry.season }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% endblock %}
