@@ -350,3 +350,56 @@ def lab2():
 def filters():
     phrase = "О <b>сколько</b> <u>нам</u> <i>открытий</i> чудных..."
     return render_template('filter.html', phrase=phrase)
+
+@app.route('/lab2/add_flower/')
+def add_flower_empty():
+    return "Вы не задали имя цветка", 400
+
+@app.route('/lab2/flowers/')
+def all_flowers():
+    flowers_html = ""
+    for flower in flower_list:
+        flowers_html += f"<li>{flower}</li>"
+    
+    return f'''
+    <!DOCTYPE html>
+    <html>
+    <body>
+        <h1>Все цветы</h1>
+        <p>Количество цветов: {len(flower_list)}</p>
+        <ul>
+            {flowers_html}
+        </ul>
+        <a href="/lab2/clear_flowers">Очистить список</a>
+    </body>
+    </html>
+    '''
+
+@app.route('/lab2/clear_flowers')
+def clear_flowers():
+    flower_list.clear()
+    return redirect('/lab2/flowers/')
+
+@app.route('/lab2/calc/')
+def calc_default():
+    return redirect('/lab2/calc/1/1')
+
+@app.route('/lab2/calc/<int:a>')
+def calc_one(a):
+    return redirect(f'/lab2/calc/{a}/1')
+
+@app.route('/lab2/calc/<int:a>/<int:b>')
+def calc(a, b):
+    return f'''
+    <!DOCTYPE html>
+    <html>
+    <body>
+        <h1>Расчёт с параметрами:</h1>
+        <p>{a} + {b} = {a + b}</p>
+        <p>{a} - {b} = {a - b}</p>
+        <p>{a} × {b} = {a * b}</p>
+        <p>{a} / {b} = {a / b}</p>
+        <p>{a}<sup>{b}</sup> = {a ** b}</p>
+    </body>
+    </html>
+    '''
