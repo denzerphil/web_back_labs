@@ -3,18 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        {% if name %}
+            {{ name }}. 
+        {% else %}
+            Аноним. 
+        {% endif %}
+        {% if lab_num %}Лабораторная работа {{ lab_num }}{% endif %}
+    </title>
     <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
-    <title>Филиппов Денис. Лабораторная работа 2</title>
 </head>
 <body>
     <header>
-        WEB-программирование, часть 2. Лабораторная работа 2
+        WEB-программирование, часть 2. {% if lab_num %}Лабораторная работа {{ lab_num }}{% endif %}
     </header>
     <main>
-        основной контент
+        <!-- основной контент -->
     </main>
     <footer>
-        &copy; {{ name }}, ФБИ-33, 3 курс, 2025
+        &copy;
+        {% if name %}
+            {{ name }},
+        {% else %}
+            Анонимус,
+        {% endif %}
+        {% if group %}
+            {{ group }},
+        {% else %}
+            Группа не указана,
+        {% endif %}
+        {% if course %}
+            {{ course }} курс,
+        {% else %}
+            Курс не указан,
+        {% endif %}
+        2025
     </footer>
 </body>
 </html>
