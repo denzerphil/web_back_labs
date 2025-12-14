@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 3 - Железнодорожный билет{% endblock %}
+
+{% block main %}
+    <h1>Ваш билет</h1>
+    
+    <div class="ticket">
+        <h2>Железнодорожный билет</h2>
+        
+        {% if age|int < 18 %}
+            <div class="ticket-type">Детский билет</div>
+        {% else %}
+            <div class="ticket-type">Взрослый билет</div>
+        {% endif %}
+        
+        <div class="ticket-info">
+            <p><strong>Пассажир:</strong> {{ fio }}</p>
+            <p><strong>Маршрут:</strong> {{ from_city }} → {{ to_city }}</p>
+            <p><strong>Дата:</strong> {{ date }}</p>
+            <p><strong>Полка:</strong> 
+                {% if shelf == 'lower' %}Нижняя
+                {% elif shelf == 'upper' %}Верхняя
+                {% elif shelf == 'upper-side' %}Верхняя боковая
+                {% elif shelf == 'lower-side' %}Нижняя боковая
+                {% endif %}
+            </p>
+            <p><strong>Дополнительные услуги:</strong>
+                {% if linen == 'on' %}Бельё{% endif %}
+                {% if luggage == 'on' %}{% if linen == 'on' %}, {% endif %}Багаж{% endif %}
+                {% if insurance == 'on' %}{% if linen == 'on' or luggage == 'on' %}, {% endif %}Страховка{% endif %}
+                {% if linen != 'on' and luggage != 'on' and insurance != 'on' %}Нет{% endif %}
+            </p>
+        </div>
+        
+        <div class="ticket-price">
+            <h3>Итого к оплате: {{ price }} руб.</h3>
+        </div>
+        
+        <div class="ticket-actions">
+            <a href="/lab3/ticket">Оформить новый билет</a>
+        </div>
+    </div>
+{% endblock %}

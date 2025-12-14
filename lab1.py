@@ -15,7 +15,7 @@ def lab():
     </head>
     <body>
         <h1>Лабораторная работа 1</h1>
-        
+       
         <p>
         Flask — фреймворк для создания веб-приложений на языке
         программирования Python, использующий набор инструментов
@@ -24,9 +24,9 @@ def lab():
         веб-приложений, сознательно предоставляющих лишь самые ба-
         зовые возможности.
         </p>
-        
+       
         <a href="/">На главную страницу</a>
-        
+       
         <h2>Список роутов</h2>
         <ul>
             <li><a href="/lab1/web">Web-сервер</a></li>
@@ -39,7 +39,6 @@ def lab():
 </html>
 '''
 
-# Остальные роуты остаются без изменений
 @lab1.route("/lab1/web")
 def web():
     return """<!doctype html> \
@@ -55,7 +54,7 @@ def web():
 
 @lab1.route("/lab1/info")
 def info():
-    return redirect("/lab1/author")  
+    return redirect("/lab1/author")
 
 @lab1.route("/lab1/author")
 def author():
@@ -75,8 +74,8 @@ def author():
 
 @lab1.route('/lab1/image')
 def image():
-    css_url = url_for('static', filename='lab1.css')
-    image_url = url_for('static', filename='oak.jpg')
+    css_url = url_for('static', filename='lab1/lab1.css')
+    image_url = url_for('static', filename='lab1/oak.jpg')
     return f'''
 <!doctype html>
 <html>

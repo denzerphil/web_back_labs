@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 3{% endblock %}
+
+{% block main %}
+    <h1>Настройки отображения</h1>
+    
+    <form>
+        <div>
+            <label for="color">Выберите цвет текста:</label><br>
+            <input type="color" id="color" name="color" value="{{ color or '#000000' }}">
+        </div>
+        
+        <div>
+            <button type="submit">Применить</button>
+        </div>
+    </form>
+    
+    <div style="margin-top: 20px;">
+        <a href="/lab3/del_settings">Сбросить настройки (удалить все куки настроек)</a>
+    </div>
+{% endblock %}

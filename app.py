@@ -1,5 +1,4 @@
 from flask import Flask, url_for, request, redirect, abort, render_template
-
 app = Flask(__name__)
 
 # Импортируем blueprint'ы после создания app
@@ -25,7 +24,7 @@ def index():
         <header>
             <h1>НГТУ, ФБ, WEB-программирование, часть 2. Список лабораторных</h1>
         </header>
-        
+       
         <nav>
             <ul>
                 <li><a href="/lab1">Первая лабораторная</a></li>
@@ -33,7 +32,7 @@ def index():
                 <li><a href="/lab3/">Третья лабораторная</a></li>
             </ul>
         </nav>
-        
+       
         <footer>
             <hr>
             <p>Филиппов Денис Максимович, ФБИ-33, 3 курс, 2024</p>
@@ -42,7 +41,6 @@ def index():
 </html>
 '''
 
-# Обработчики ошибок и остальной код остаются без изменений
 @app.route('/400')
 def bad_request():
     abort(400)
@@ -51,11 +49,25 @@ def bad_request():
 def unauthorized():
     abort(401)
 
-# ... остальные обработчики ошибок
+@app.route('/402')
+def payment_required():
+    abort(402)
+
+@app.route('/403')
+def forbidden():
+    abort(403)
+
+@app.route('/405')
+def method_not_allowed():
+    abort(405)
+
+@app.route('/418')
+def teapot():
+    abort(418)
 
 @app.errorhandler(404)
 def not_found_error(error):
-    image_url = url_for('static', filename='404.webp')
+    image_url = url_for('static', filename='lab1/404.webp')
     return f'''
 <!doctype html>
 <html>

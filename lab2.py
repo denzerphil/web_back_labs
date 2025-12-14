@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, request
+from flask import Blueprint, render_template, redirect, request, abort
 import datetime
 
 lab2 = Blueprint('lab2', __name__)
@@ -75,7 +75,6 @@ berries = [
         'image': 'Клубника.webp',
         'season': 'май-июнь'
     },
-    # ... остальные ягоды
 ]
 
 @lab2.route('/lab2/berries')

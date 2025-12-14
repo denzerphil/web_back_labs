@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 3{% endblock %}
+
+{% block main %}
+    <h1>Формы, cookie</h1>
+    <div>
+        Привет, 
+        <span style="color: {{ name_color or 'black' }}">
+            {{ name or 'гость' }}
+        </span>!
+        {% if age and age != 'None' %}
+            (возраст: {{ age }})
+        {% endif %}
+    </div>
+    
+    <div>Список сделанных страниц:</div>
+    <ol>
+        <li><a href="/lab3/cookie">Установить куки</a></li>
+        <li><a href="/lab3/del_cookie">Удалить куки</a></li>
+        <li><a href="/lab3/form1">Форма (GET)</a></li>
+        <li><a href="/lab3/order">Заказ напитка</a></li>
+        <li><a href="/lab3/settings">Настройки цвета</a></li>
+        <li><a href="/lab3/ticket">Железнодорожный билет</a></li>
+        <li><a href="/lab3/products">Поиск товаров по цене (доп. задание)</a></li>
+    </ol>
+{% endblock %}

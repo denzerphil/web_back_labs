@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 3{% endblock %}
+
+{% block main %}
+    {% if user and not errors.user and not errors.age %}
+        <h1>Привет, {{ user }}!</h1>
+        <h2>Добро пожаловать на наш сайт!</h2>
+        
+        <div>Ваш возраст: {{ age or 'не указан' }}</div>
+        <div>Ваш пол: {{ 'мужской' if sex == 'male' else 'женский' if sex == 'female' else 'не указан' }}</div>
+        
+        <div>
+            <a href="/lab3/form1">Заново</a>
+        </div>
+    {% else %}
+        <h1>Пользователь</h1>
+        
+        <form>
+            <div>
+                <label>Ваше имя:</label>
+                <input type="text" placeholder="как вас зовут?" name="user" value="{{ user or '' }}">
+                {% if errors and errors.user %}
+                    <span class="error">{{ errors.user }}</span>
+                {% endif %}
+            </div>
+            
+            <div>
+                <label>Ваш возраст:</label>
+                <input type="number" name="age" value="{{ age or '' }}">
+                {% if errors and errors.age %}
+                    <span class="error">{{ errors.age }}</span>
+                {% endif %}
+            </div>
+            
+            <div>
+                <label>Ваш пол:</label>
+                <select name="sex">
+                    <option value="male" {{ 'selected' if sex == 'male' else '' }}>мужчина</option>
+                    <option value="female" {{ 'selected' if sex == 'female' else '' }}>женщина</option>
+                </select>
+            </div>
+            
+            <div>
+                <button type="submit">Отправить</button>
+            </div>
+        </form>
+    {% endif %}
+{% endblock %}

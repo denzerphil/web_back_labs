@@ -1,0 +1,166 @@
+/* Основные стили для проекта */
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    padding: 0;
+    line-height: 1.6;
+}
+
+header {
+    background: #f4f4f4;
+    padding: 10px 20px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+}
+
+footer {
+    margin-top: 20px;
+    padding: 10px;
+    background: #f4f4f4;
+    text-align: center;
+    border-radius: 5px;
+}
+
+.error {
+    color: red;
+    font-size: 0.9em;
+    display: block;
+    margin-top: 5px;
+}
+
+/* Стили для лабораторной 1 */
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Стили для форм */
+form div {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+input, select, button {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    padding: 10px 20px;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+/* Стили для таблиц */
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 20px 0;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+/* Стили для списков */
+ul, ol {
+    padding-left: 20px;
+}
+
+li {
+    margin-bottom: 5px;
+}
+
+/* Стили для ссылок */
+a {
+    color: #0066cc;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Стили для карточек товаров/ягод */
+.berry-card, .flower-item {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 15px;
+    background-color: #f9f9f9;
+}
+
+.delete-link {
+    color: #cc0000;
+    margin-left: 10px;
+}
+
+.clear-btn {
+    background-color: #ff4444;
+    color: white;
+    padding: 8px 15px;
+    text-decoration: none;
+    border-radius: 4px;
+    display: inline-block;
+    margin: 10px 0;
+}
+
+.clear-btn:hover {
+    background-color: #cc0000;
+}
+
+/* Стили для железнодорожного билета */
+.ticket {
+    border: 2px solid #333;
+    border-radius: 10px;
+    padding: 20px;
+    max-width: 600px;
+    margin: 20px auto;
+    background-color: #fff;
+}
+
+.ticket-type {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+    color: #0066cc;
+}
+
+.ticket-info {
+    margin: 20px 0;
+}
+
+.ticket-price {
+    font-size: 20px;
+    font-weight: bold;
+    text-align: right;
+    color: #009900;
+    border-top: 1px solid #ddd;
+    padding-top: 15px;
+}
+
+.ticket-actions {
+    text-align: center;
+    margin-top: 20px;
+}
