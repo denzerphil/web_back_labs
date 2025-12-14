@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 5{% endblock %}
+
+{% block main %}
+<h1>База знаний</h1>
+
+<div style="margin: 20px 0; padding: 10px; background-color: #f5f5f5; border-radius: 5px;">
+    {% if login %}
+        <p>Вы вошли как: <strong>{{ name }}</strong> ({{ login }})</p>
+    {% else %}
+        <p>Вы вошли как: <strong>Гость</strong></p>
+    {% endif %}
+</div>
+
+<div style="display: flex; flex-wrap: wrap; gap: 10px; margin: 20px 0;">
+    <a href="/lab5/list" style="padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px;">
+        📋 Список статей
+    </a>
+    
+    <a href="/lab5/create" style="padding: 10px 20px; background-color: #2196F3; color: white; text-decoration: none; border-radius: 5px;">
+        ✏️ Создать статью
+    </a>
+    
+    <a href="/lab5/public" style="padding: 10px 20px; background-color: #9C27B0; color: white; text-decoration: none; border-radius: 5px;">
+        🌐 Публичные статьи
+    </a>
+    
+    {% if not login %}
+        <a href="/lab5/login" style="padding: 10px 20px; background-color: #FF9800; color: white; text-decoration: none; border-radius: 5px;">
+            🔑 Войти
+        </a>
+        
+        <a href="/lab5/register" style="padding: 10px 20px; background-color: #795548; color: white; text-decoration: none; border-radius: 5px;">
+            📝 Регистрация
+        </a>
+    {% else %}
+        <a href="/lab5/profile" style="padding: 10px 20px; background-color: #607D8B; color: white; text-decoration: none; border-radius: 5px;">
+            👤 Профиль
+        </a>
+        
+        <a href="/lab5/users" style="padding: 10px 20px; background-color: #009688; color: white; text-decoration: none; border-radius: 5px;">
+            👥 Пользователи
+        </a>
+        
+        <a href="/lab5/logout" style="padding: 10px 20px; background-color: #f44336; color: white; text-decoration: none; border-radius: 5px;">
+            🚪 Выход
+        </a>
+    {% endif %}
+</div>
+
+<div style="margin-top: 30px; padding: 15px; background-color: #e8f5e8; border-radius: 5px;">
+    <h3>О проекте</h3>
+    <p>Это сервис базы знаний, где пользователи могут:</p>
+    <ul>
+        <li>Регистрироваться и входить в систему</li>
+        <li>Создавать свои статьи</li>
+        <li>Редактировать и удалять свои статьи</li>
+        <li>Добавлять статьи в избранное</li>
+        <li>Публиковать статьи для всех пользователей</li>
+        <li>Ставить лайки публичным статьям</li>
+        <li>Просматривать список всех пользователей</li>
+    </ul>
+</div>
+{% endblock %}

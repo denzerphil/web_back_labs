@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block lab %}Мои статьи{% endblock %}
+
+{% block main %}
+<h1>Мои статьи</h1>
+<p>Пользователь: <strong>{{ name }}</strong></p>
+
+{% if articles %}
+    <p>Всего статей: {{ articles|length }}</p>
+    
+    {% for article in articles %}
+        <div style="margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px;">
+            <h2>
+                {{ article.title }}
+                {% if article.is_favorite %}
+                    <span style="color: #FF9800; margin-left: 10px;">★ Избранное</span>
+                {% endif %}
+                {% if article.is_public %}
+                    <span style="color: #4CAF50; margin-left: 10px;">🌐 Публичная</span>
+                {% endif %}
+            </h2>
+            
+            <div style="margin: 10px 0; padding: 10px; background-color: #f9f9f9; border-radius: 3px;">
+                {{ article.article_text|replace('\n', '<br>')|safe }}
+            </div>
+            
+            <div style="margin-top: 10px; font-size: 0.9em; color: #666;">
+                <span>Лайков: {{ article.likes }}</span>
+            </div>
+            
+            <div style="margin-top: 15px;">
+                <a href="/lab5/edit/{{ article.id }}" style="padding: 5px 10px; background-color: #2196F3; color: white; text-decoration: none; border-radius: 3px; margin-right: 5px;">
+                    Редактировать
+                </a>
+                <a href="/lab5/delete/{{ article.id }}" onclick="return confirm('Вы уверены, что хотите удалить эту статью?');"
+                   style="padding: 5px 10px; background-color: #f44336; color: white; text-decoration: none; border-radius: 3px;">
+                    Удалить
+                </a>
+            </div>
+        </div>
+    {% endfor %}
+{% else %}
+    <div style="color: #666; padding: 20px; text-align: center; background-color: #f5f5f5; border-radius: 5px;">
+        <p>У вас пока нет статей.</p>
+        <a href="/lab5/create" style="padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px;">
+            Создать первую статью
+        </a>
+    </div>
+{% endif %}
+
+<div style="margin-top: 30px;">
+    <a href="/lab5" style="padding: 10px 20px; background-color: #607D8B; color: white; text-decoration: none; border-radius: 5px;">
+        На главную
+    </a>
+</div>
+{% endblock %}

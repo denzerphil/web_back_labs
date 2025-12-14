@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block lab %}Успех{% endblock %}
+
+{% block main %}
+<h1>Успешно!</h1>
+
+<div style="color: #006600; background-color: #e6ffe6; padding: 20px; margin: 20px 0; border-radius: 5px;">
+    <p>{{ message }}</p>
+    {% if login %}
+        <p>Ваш логин: <strong>{{ login }}</strong></p>
+    {% endif %}
+</div>
+
+<a href="/lab5" style="padding: 10px 20px; background-color: #2196F3; color: white; text-decoration: none; border-radius: 5px;">
+    Перейти на главную страницу
+</a>
+{% endblock %}
