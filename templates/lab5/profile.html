@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block lab %}Профиль{% endblock %}
+
+{% block main %}
+<h1>Настройки профиля</h1>
+
+{% if error %}
+    <div style="color: #cc0000; background-color: #ffe6e6; padding: 10px; margin: 10px 0; border-radius: 5px;">
+        {{ error }}
+    </div>
+{% endif %}
+
+{% if success %}
+    <div style="color: #006600; background-color: #e6ffe6; padding: 10px; margin: 10px 0; border-radius: 5px;">
+        {{ success }}
+    </div>
+{% endif %}
+
+<form method="post">
+    <div style="margin: 15px 0;">
+        <label for="name">Имя (будет отображаться другим пользователям):</label><br>
+        <input type="text" id="name" name="name" value="{{ name }}" 
+               style="width: 300px; padding: 5px;">
+    </div>
+    
+    <h3>Смена пароля (оставьте пустым, если не хотите менять)</h3>
+    
+    <div style="margin: 15px 0;">
+        <label for="new_password">Новый пароль:</label><br>
+        <input type="password" id="new_password" name="new_password" 
+               style="width: 300px; padding: 5px;">
+    </div>
+    
+    <div style="margin: 15px 0;">
+        <label for="confirm_password">Подтвердите новый пароль:</label><br>
+        <input type="password" id="confirm_password" name="confirm_password" 
+               style="width: 300px; padding: 5px;">
+    </div>
+    
+    <div style="margin: 20px 0;">
+        <button type="submit" style="padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 5px;">
+            Сохранить изменения
+        </button>
+        <a href="/lab5" style="margin-left: 10px; padding: 10px 20px; background-color: #ccc; color: black; text-decoration: none; border-radius: 5px;">
+            Отмена
+        </a>
+    </div>
+</form>
+
+<div style="margin-top: 30px; padding: 15px; background-color: #f5f5f5; border-radius: 5px;">
+    <h3>Действия с аккаунтом</h3>
+    <a href="/lab5/list" style="display: inline-block; margin: 5px; padding: 8px 15px; background-color: #2196F3; color: white; text-decoration: none; border-radius: 3px;">
+        📋 Мои статьи
+    </a>
+    <a href="/lab5/logout" style="display: inline-block; margin: 5px; padding: 8px 15px; background-color: #f44336; color: white; text-decoration: none; border-radius: 3px;">
+        🚪 Выйти из системы
+    </a>
+</div>
+{% endblock %}

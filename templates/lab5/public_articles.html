@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block lab %}Публичные статьи{% endblock %}
+
+{% block main %}
+<h1>Публичные статьи</h1>
+
+{% if is_authenticated %}
+    <p>Вы можете ставить лайки статьям других пользователей!</p>
+{% else %}
+    <div style="background-color: #fff3cd; padding: 10px; border-radius: 5px; margin: 10px 0;">
+        <p>Чтобы ставить лайки статьям, <a href="/lab5/login">войдите в систему</a>.</p>
+    </div>
+{% endif %}
+
+{% if articles %}
+    <p>Всего публичных статей: {{ articles|length }}</p>
+    
+    {% for article in articles %}
+        <div style="margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px;">
+            <h2>
+                {{ article.title }}
+                {% if article.is_favorite %}
+                    <span style="color: #FF9800; margin-left: 10px;">★ Избранное</span>
+                {% endif %}
+            </h2>
+            
+            <p style="color: #666; font-style: italic;">
+                Автор: {{ article.author }}
+            </p>
+            
+            <div style="margin: 10px 0; padding: 10px; background-color: #f9f9f9; border-radius: 3px;">
+                {{ article.article_text|replace('\n', '<br>')|safe }}
+            </div>
+            
+            <div style="margin-top: 10px; font-size: 0.9em; color: #666;">
+                <span>Лайков: {{ article.likes }}</span>
+                {% if is_authenticated %}
+                    <a href="/lab5/like/{{ article.id }}" 
+                       style="margin-left: 10px; padding: 3px 10px; background-color: #f44336; color: white; text-decoration: none; border-radius: 3px;">
+                        ❤️ Поставить лайк
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+{% else %}
+    <div style="color: #666; padding: 20px; text-align: center; background-color: #f5f5f5; border-radius: 5px;">
+        <p>Публичных статей пока нет.</p>
+        {% if is_authenticated %}
+            <a href="/lab5/create" style="padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px;">
+                Создать публичную статью
+            </a>
+        {% endif %}
+    </div>
+{% endif %}
+
+<div style="margin-top: 30px;">
+    <a href="/lab5" style="padding: 10px 20px; background-color: #607D8B; color: white; text-decoration: none; border-radius: 5px;">
+        На главную
+    </a>
+</div>
+{% endblock %}
