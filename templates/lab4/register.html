@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block lab %}Регистрация{% endblock %}
+
+{% block main %}
+<h1>Регистрация</h1>
+
+{% if error %}
+    <div style="color: #cc0000; background-color: #ffe6e6; padding: 10px; margin: 10px 0; border-radius: 5px;">
+        {{ error }}
+    </div>
+{% endif %}
+
+{% if success %}
+    <div style="color: #006600; background-color: #e6ffe6; padding: 10px; margin: 10px 0; border-radius: 5px;">
+        {{ success }}
+    </div>
+{% endif %}
+
+<form method="post">
+    <div>
+        <label for="login">Логин:</label>
+        <input type="text" id="login" name="login" value="{{ login }}" required>
+    </div>
+    
+    <div>
+        <label for="password">Пароль:</label>
+        <input type="password" id="password" name="password" required>
+    </div>
+    
+    <div>
+        <label for="confirm_password">Подтвердите пароль:</label>
+        <input type="password" id="confirm_password" name="confirm_password" required>
+    </div>
+    
+    <div>
+        <label for="name">Имя (ФИО):</label>
+        <input type="text" id="name" name="name" value="{{ name }}" required>
+    </div>
+    
+    <div>
+        <label>Пол:</label>
+        <input type="radio" id="male" name="gender" value="мужской" {% if gender == 'мужской' %}checked{% endif %}>
+        <label for="male">Мужской</label>
+        
+        <input type="radio" id="female" name="gender" value="женский" {% if gender == 'женский' %}checked{% endif %}>
+        <label for="female">Женский</label>
+    </div>
+    
+    <div>
+        <button type="submit">Зарегистрироваться</button>
+        <button type="reset">Сбросить</button>
+    </div>
+</form>
+
+<p>Уже есть аккаунт? <a href="/lab4/login">Войдите</a></p>
+<br>
+<a href="/lab4/">Назад к списку</a>
+{% endblock %}

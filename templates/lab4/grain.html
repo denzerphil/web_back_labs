@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block lab %}Заказ зерна{% endblock %}
+
+{% block main %}
+<h1>Заказ зерна</h1>
+
+<form method="post">
+    <div>
+        <label for="grain_type">Тип зерна:</label>
+        <select id="grain_type" name="grain_type">
+            <option value="" {% if not grain_type %}selected{% endif %}>Выберите зерно</option>
+            <option value="barley" {% if grain_type == 'barley' %}selected{% endif %}>Ячмень (12 000 руб/т)</option>
+            <option value="oats" {% if grain_type == 'oats' %}selected{% endif %}>Овёс (8 500 руб/т)</option>
+            <option value="wheat" {% if grain_type == 'wheat' %}selected{% endif %}>Пшеница (9 000 руб/т)</option>
+            <option value="rye" {% if grain_type == 'rye' %}selected{% endif %}>Рожь (15 000 руб/т)</option>
+        </select>
+    </div>
+    
+    <div>
+        <label for="weight">Вес (тонны):</label>
+        <input type="number" id="weight" name="weight" min="0.1" max="100" step="0.1" 
+               value="{% if weight %}{{ weight }}{% else %}1{% endif %}"
+               placeholder="Введите вес">
+    </div>
+    
+    <div>
+        <button type="submit">Рассчитать заказ</button>
+    </div>
+</form>
+
+{% if error %}
+    <div style="color: #cc0000; background-color: #ffe6e6; padding: 10px; margin: 10px 0; border-radius: 5px;">
+        {{ error }}
+    </div>
+{% endif %}
+
+{% if message %}
+    <div style="color: #006600; background-color: #e6ffe6; padding: 15px; margin: 15px 0; border-radius: 5px;">
+        <h3>Заказ успешно сформирован!</h3>
+        <p>{{ message }}</p>
+        {% if discount > 0 %}
+            <p style="color: #009900;">🎉 <strong>Применена скидка 10% за большой объём!</strong></p>
+        {% endif %}
+    </div>
+{% endif %}
+
+<div style="margin-top: 20px; padding: 10px; background-color: #fff8e1; border-radius: 5px;">
+    <h3>Цены:</h3>
+    <ul>
+        <li>Ячмень: 12 000 руб/т</li>
+        <li>Овёс: 8 500 руб/т</li>
+        <li>Пшеница: 9 000 руб/т</li>
+        <li>Рожь: 15 000 руб/т</li>
+    </ul>
+    <p><strong>Скидки:</strong> При заказе более 10 тонн - скидка 10%</p>
+    <p><strong>Ограничение:</strong> Максимальный заказ - 100 тонн</p>
+</div>
+
+<br>
+<a href="/lab4/">Назад к списку</a>
+{% endblock %}
