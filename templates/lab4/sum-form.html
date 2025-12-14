@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block lab %}Сложение чисел{% endblock %}
+
+{% block main %}
+<h1>Сложение чисел</h1>
+<form method="post" action="/lab4/sum">
+    <div>
+        <input type="number" name="x1" placeholder="Первое число"> + 
+        <input type="number" name="x2" placeholder="Второе число">
+    </div>
+    <div>
+        <input type="submit" value="=">
+    </div>
+</form>
+<a href="/lab4/">Назад к списку</a>
+{% endblock %}

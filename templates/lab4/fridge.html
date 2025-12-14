@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block lab %}Холодильник{% endblock %}
+
+{% block main %}
+<h1>Холодильник</h1>
+<p>Установите температуру холодильника (от -12°C до -1°C)</p>
+
+<form method="post">
+    <div>
+        <label for="temp">Температура (°C):</label>
+        <input type="number" id="temp" name="temp" min="-50" max="50" step="1" 
+               value="{% if temp %}{{ temp }}{% else %}-5{% endif %}"
+               placeholder="Введите температуру">
+    </div>
+    <div>
+        <button type="submit">Установить температуру</button>
+    </div>
+</form>
+
+{% if error %}
+    <div style="color: #cc0000; background-color: #ffe6e6; padding: 10px; margin: 10px 0; border-radius: 5px;">
+        {{ error }}
+    </div>
+{% endif %}
+
+{% if message %}
+    <div style="color: #006600; background-color: #e6ffe6; padding: 10px; margin: 10px 0; border-radius: 5px;">
+        <p>{{ message }}</p>
+        {% if snowflakes > 0 %}
+            <p>
+                {% for i in range(snowflakes) %}
+                    ❄️
+                {% endfor %}
+                Уровень охлаждения: {{ snowflakes }} снежинок
+            </p>
+        {% endif %}
+    </div>
+{% endif %}
+
+<div style="margin-top: 20px; padding: 10px; background-color: #f0f8ff; border-radius: 5px;">
+    <h3>Диапазоны температур:</h3>
+    <ul>
+        <li>-12°C до -9°C: ❄️❄️❄️ (сильное охлаждение)</li>
+        <li>-8°C до -5°C: ❄️❄️ (среднее охлаждение)</li>
+        <li>-4°C до -1°C: ❄️ (лёгкое охлаждение)</li>
+    </ul>
+</div>
+
+<br>
+<a href="/lab4/">Назад к списку</a>
+{% endblock %}

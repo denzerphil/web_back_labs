@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block lab %}Авторизация{% endblock %}
+
+{% block main %}
+    {% if authorized %}
+        <h1>Добро пожаловать, {{ name }}!</h1>
+        <p>Вы успешно авторизовались как {{ login }}</p>
+        <div>
+            <form action="/lab4/logout" method="post">
+                <button type="submit">Выход</button>
+            </form>
+        </div>
+        {% if 'login' in session %}
+            <p><a href="/lab4/users">Список пользователей</a></p>
+        {% endif %}
+    {% else %}
+        <h1>Вход</h1>
+        <h2>Пожалуйста, авторизуйтесь</h2>
+        
+        {% if error %}
+            <div style="color: #ff0000; background-color: #ffe6e6; padding: 10px; border-radius: 5px; margin: 10px 0;">
+                {{ error }}
+            </div>
+        {% endif %}
+        
+        <form method="post">
+            <div>
+                <label for="login">Пользователь:</label>
+                <input type="text" id="login" name="login" value="{{ prev_login }}">
+            </div>
+            <div>
+                <label for="password">Пароль:</label>
+                <input type="password" id="password" name="password">
+            </div>
+            <div>
+                <button type="submit">Войти</button>
+                <button type="reset">Отмена</button>
+            </div>
+        </form>
+        <p>Нет аккаунта? <a href="/lab4/register">Зарегистрируйтесь</a></p>
+    {% endif %}
+    <br>
+    <a href="/lab4/">Назад к списку</a>
+{% endblock %}
