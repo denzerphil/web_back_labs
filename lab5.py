@@ -28,7 +28,7 @@ def db_connect():
     except Exception as e:
         print(f"Ошибка подключения к БД: {e}")
         raise
-
+# Ф
 # Функция для закрытия соединения с БД
 def db_close(conn, cur):
     conn.commit()
