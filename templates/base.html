@@ -10,6 +10,7 @@
             color: {{ request.cookies.get('color', '#000000') }};
         }
     </style>
+    {% block script %}{% endblock %} <!-- <-- Добавляем блок для скриптов -->
 </head>
 <body>
     <header>
