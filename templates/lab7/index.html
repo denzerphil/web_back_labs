@@ -5,62 +5,394 @@
 {% block script %}
 <link rel="stylesheet" href="{{ url_for('static', filename='lab7/style.css') }}">
 <script src="{{ url_for('static', filename='lab7/main.js') }}"></script>
+<style>
+    /* Дополнительные стили для модального окна */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.4);
+    }
+    
+    .modal-content {
+        background-color: #fefefe;
+        margin: 5% auto;
+        padding: 30px;
+        border: 1px solid #888;
+        border-radius: 10px;
+        width: 500px;
+        box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+        max-height: 80vh;
+        overflow-y: auto;
+    }
+    
+    .modal h2 {
+        margin-top: 0;
+        color: #333;
+        border-bottom: 2px solid #4CAF50;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+    }
+    
+    .modal label {
+        display: block;
+        margin-bottom: 15px;
+        color: #555;
+        font-weight: bold;
+    }
+    
+    .modal input[type="text"],
+    .modal input[type="number"],
+    .modal textarea {
+        width: 100%;
+        padding: 10px;
+        margin-top: 5px;
+        margin-bottom: 5px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        box-sizing: border-box;
+        font-size: 14px;
+    }
+    
+    .modal input[type="text"]:focus,
+    .modal input[type="number"]:focus,
+    .modal textarea:focus {
+        border-color: #4CAF50;
+        outline: none;
+        box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+    }
+    
+    .modal textarea {
+        height: 150px;
+        resize: vertical;
+        font-family: Arial, sans-serif;
+    }
+    
+    .modal-buttons {
+        text-align: right;
+        margin-top: 25px;
+        padding-top: 15px;
+        border-top: 1px solid #eee;
+    }
+    
+    .modal-buttons button {
+        margin-left: 10px;
+        min-width: 100px;
+    }
+    
+    .error-message {
+        color: #d32f2f;
+        font-size: 12px;
+        margin-top: 3px;
+        margin-bottom: 10px;
+        display: block;
+    }
+    
+    .hint {
+        font-size: 12px;
+        color: #666;
+        font-style: italic;
+        margin-top: 3px;
+        display: block;
+    }
+    
+    /* Стили для таблицы */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    table th {
+        background-color: #4CAF50;
+        color: white;
+        padding: 12px 15px;
+        text-align: left;
+        font-weight: bold;
+    }
+    
+    table td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #ddd;
+        vertical-align: middle;
+    }
+    
+    table tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+    
+    table tr:hover {
+        background-color: #f5f5f5;
+    }
+    
+    table tr:last-child td {
+        border-bottom: 2px solid #4CAF50;
+    }
+    
+    /* Стили для оригинального названия */
+    .original-title {
+        font-style: italic;
+        color: #666;
+        font-size: 0.9em;
+    }
+    
+    /* Стили для кнопок в таблице */
+    .actions-cell {
+        white-space: nowrap;
+    }
+    
+    .actions-cell button {
+        margin: 0 5px;
+        padding: 6px 12px;
+        font-size: 13px;
+    }
+    
+    /* Кнопки действий */
+    .edit-btn {
+        background-color: #2196F3;
+    }
+    
+    .edit-btn:hover {
+        background-color: #1976D2;
+    }
+    
+    .delete-btn {
+        background-color: #f44336;
+    }
+    
+    .delete-btn:hover {
+        background-color: #d32f2f;
+    }
+    
+    .add-btn {
+        background-color: #FF9800;
+        padding: 12px 24px;
+        font-size: 16px;
+        font-weight: bold;
+        border-radius: 6px;
+        transition: all 0.3s;
+    }
+    
+    .add-btn:hover {
+        background-color: #F57C00;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    
+    /* Общие стили для кнопок */
+    button {
+        padding: 8px 16px;
+        margin: 5px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background-color 0.3s, transform 0.2s;
+    }
+    
+    button:hover {
+        transform: translateY(-1px);
+    }
+    
+    button:active {
+        transform: translateY(0);
+    }
+    
+    /* Заголовок страницы */
+    h1 {
+        color: #333;
+        margin-bottom: 10px;
+        padding-bottom: 10px;
+        border-bottom: 3px solid #4CAF50;
+    }
+    
+    /* Контейнер для кнопки добавления */
+    .add-container {
+        text-align: center;
+        margin-top: 30px;
+        margin-bottom: 30px;
+    }
+    
+    /* Сообщение при пустой таблице */
+    .empty-message {
+        text-align: center;
+        padding: 40px;
+        color: #777;
+        font-style: italic;
+        font-size: 18px;
+    }
+    
+    /* Адаптивность */
+    @media (max-width: 768px) {
+        .modal-content {
+            width: 90%;
+            margin: 10% auto;
+        }
+        
+        table {
+            font-size: 14px;
+        }
+        
+        table th, table td {
+            padding: 8px;
+        }
+        
+        .actions-cell button {
+            display: block;
+            width: 100%;
+            margin: 5px 0;
+        }
+    }
+</style>
 {% endblock %}
 
 {% block main %}
-    <h1>Список фильмов</h1>
+    <h1>📽️ Список фильмов</h1>
     
-    <table>
-        <thead>
-            <tr>
-                <th>Оригинальное название</th>
-                <th>Русское название</th>
-                <th>Год</th>
-                <th>Действие</th>
-            </tr>
-        </thead>
-        <tbody id="film-list"></tbody>
-    </table>
-    
-    <script>
-        fillFilmList();
-    </script>
-    
-    <div style="margin-top: 20px;">
-        <button class="add-btn" onclick="addFilm()">Добавить фильм</button>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th width="25%">Оригинальное название</th>
+                    <th width="25%">Русское название</th>
+                    <th width="15%">Год</th>
+                    <th width="35%">Действия</th>
+                </tr>
+            </thead>
+            <tbody id="film-list">
+                <!-- Таблица будет заполнена JavaScript -->
+            </tbody>
+        </table>
+        
+        <div id="empty-table-message" class="empty-message" style="display: none;">
+            Нет фильмов для отображения. Добавьте первый фильм!
+        </div>
     </div>
     
+    <div class="add-container">
+        <button class="add-btn" onclick="addFilm()">
+            <span style="font-size: 18px; margin-right: 8px;">+</span> Добавить новый фильм
+        </button>
+    </div>
+    
+    <!-- Модальное окно для добавления/редактирования фильма -->
     <div id="film-modal" class="modal">
         <div class="modal-content">
             <h2 id="modal-title">Добавить фильм</h2>
+            
+            <!-- Скрытое поле для ID фильма (при редактировании) -->
             <input type="hidden" id="id">
             
-            <label>
-                Название фильма на русском:
-                <input type="text" id="title_ru" required>
-            </label>
-            
-            <label>
-                Название фильма на оригинальном языке:
-                <input type="text" id="title">
-                <span style="font-size: 12px; color: #666;">(оставьте пустым, если фильм русский)</span>
-            </label>
-            
-            <label>
-                Год выпуска:
-                <input type="number" id="year" min="1895" max="2025" required>
-            </label>
-            
-            <label>
-                Описание:
-                <textarea id="description" required></textarea>
-                <div id="description_error" class="error-message"></div>
-            </label>
-            
-            <div style="text-align: right; margin-top: 20px;">
-                <button class="edit-btn" onclick="sendFilm()">Сохранить</button>
-                <button class="delete-btn" onclick="cancel()">Отмена</button>
-            </div>
+            <form id="film-form" onsubmit="event.preventDefault(); sendFilm();">
+                <label>
+                    Название фильма на русском: *
+                    <input type="text" id="title_ru" placeholder="Введите название на русском" required>
+                    <span id="title_ru_error" class="error-message"></span>
+                </label>
+                
+                <label>
+                    Название фильма на оригинальном языке:
+                    <input type="text" id="title" placeholder="Введите оригинальное название">
+                    <span id="title_error" class="error-message"></span>
+                    <span class="hint">Оставьте пустым, если фильм русский (будет использовано русское название)</span>
+                </label>
+                
+                <label>
+                    Год выпуска: *
+                    <input type="number" id="year" 
+                           min="1895" 
+                           max="{{ current_year }}" 
+                           placeholder="Например: 1994" 
+                           required>
+                    <span id="year_error" class="error-message"></span>
+                    <span class="hint">Год должен быть от 1895 (первый фильм) до текущего года</span>
+                </label>
+                
+                <label>
+                    Описание: *
+                    <textarea id="description" placeholder="Введите краткое описание фильма..." required></textarea>
+                    <span id="description_error" class="error-message"></span>
+                    <span class="hint">Максимум 2000 символов</span>
+                    <div style="text-align: right; font-size: 12px; color: #999;">
+                        <span id="char-count">0</span>/2000 символов
+                    </div>
+                </label>
+                
+                <div class="modal-buttons">
+                    <button type="button" class="delete-btn" onclick="cancel()">Отмена</button>
+                    <button type="submit" class="edit-btn" id="submit-btn">Сохранить</button>
+                </div>
+            </form>
         </div>
+    </div>
+    
+    <script>
+        // Счетчик символов для описания
+        document.getElementById('description').addEventListener('input', function() {
+            const count = this.value.length;
+            document.getElementById('char-count').textContent = count;
+            
+            if (count > 2000) {
+                document.getElementById('description_error').innerText = 'Слишком длинное описание (максимум 2000 символов)';
+            } else {
+                document.getElementById('description_error').innerText = '';
+            }
+        });
+        
+        // Получаем текущий год для валидации
+        const currentYear = new Date().getFullYear();
+        if (document.getElementById('year')) {
+            document.getElementById('year').max = currentYear;
+        }
+        
+        // Проверяем, есть ли фильмы при загрузке
+        function checkEmptyTable() {
+            const filmList = document.getElementById('film-list');
+            const emptyMessage = document.getElementById('empty-table-message');
+            
+            if (filmList.children.length === 0) {
+                emptyMessage.style.display = 'block';
+            } else {
+                emptyMessage.style.display = 'none';
+            }
+        }
+        
+        // Модифицируем fillFilmList для проверки пустой таблицы
+        const originalFillFilmList = fillFilmList;
+        fillFilmList = function() {
+            return originalFillFilmList().then(function() {
+                setTimeout(checkEmptyTable, 100); // Небольшая задержка для обновления DOM
+            });
+        };
+        
+        // Закрытие модального окна по нажатию Esc
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                hideModal();
+            }
+        });
+        
+        // Инициализация при загрузке страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            fillFilmList();
+            checkEmptyTable();
+        });
+    </script>
+    
+    <div style="margin-top: 40px; padding: 20px; background-color: #f8f9fa; border-radius: 8px; border-left: 4px solid #4CAF50;">
+        <h3 style="margin-top: 0; color: #333;">Информация о работе с фильмами:</h3>
+        <ul style="color: #555;">
+            <li>Для <strong>добавления</strong> нового фильма нажмите кнопку "Добавить новый фильм"</li>
+            <li>Для <strong>редактирования</strong> фильма нажмите кнопку "Редактировать" в строке с фильмом</li>
+            <li>Для <strong>удаления</strong> фильма нажмите кнопку "Удалить" в строке с фильмом</li>
+            <li>Все изменения сохраняются на сервере и отображаются без перезагрузки страницы</li>
+            <li>Поля, отмеченные *, являются обязательными для заполнения</li>
+        </ul>
     </div>
 {% endblock %}
