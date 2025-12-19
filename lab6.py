@@ -38,7 +38,6 @@ def main():
     user_login = session.get('login')
     user_name = session.get('name', user_login)
     
-    # Инициализируем офисы если нужно
     init_offices_if_needed()
     
     return render_template('lab6/lab6.html',

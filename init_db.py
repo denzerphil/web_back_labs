@@ -42,7 +42,7 @@ def init_sqlite_db():
         )
     """)
     
-    # Создаём таблицу офисов для лабораторной работы 6 (если не существует)
+    # Создаём таблицу офисов для лабораторной работы 6 
     cur.execute("""
         CREATE TABLE IF NOT EXISTS offices (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -52,7 +52,6 @@ def init_sqlite_db():
         )
     """)
     
-    # Проверяем, нужно ли добавлять тестовые данные
     cur.execute("SELECT COUNT(*) FROM offices")
     office_count = cur.fetchone()[0]
     
