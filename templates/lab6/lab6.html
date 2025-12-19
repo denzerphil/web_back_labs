@@ -1,0 +1,245 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 6{% endblock %}
+
+{% block script %}
+<script>
+    // Функция для получения списка офисов
+    function getOfficeList() {
+        const url = '/lab6/json-rpc-api/';
+        const json = {
+            'jsonrpc': '2.0',
+            'method': 'info',
+            'id': Math.round(Math.random() * 1000)
+        };
+
+        fetch(url, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(json)
+        })
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(data) {
+            if (data.error) {
+                handleError(data.error);
+                return;
+            }
+
+            const officeList = data.result;
+            const ul = document.getElementById('office-list');
+            ul.innerHTML = '';
+            
+            let totalCost = 0;
+            let rentedCount = 0;
+
+            for (let i = 0; i < officeList.length; i++) {
+                const office = officeList[i];
+                const li = document.createElement('li');
+                li.style.marginBottom = '10px';
+                li.style.padding = '10px';
+                li.style.border = '1px solid #ddd';
+                li.style.borderRadius = '5px';
+                li.style.backgroundColor = office.tenant ? '#f0f8ff' : '#f9f9f9';
+
+                // Отображаем информацию об офисе
+                li.innerHTML = `
+                    <strong>Офис №${office.number}</strong><br>
+                    Статус: ${office.tenant ? `Арендован (${office.tenant})` : 'Свободен'}<br>
+                    Стоимость: ${office.price} руб./мес.
+                `;
+
+                // Добавляем кнопки
+                const buttonContainer = document.createElement('div');
+                buttonContainer.style.marginTop = '5px';
+
+                if (!office.tenant) {
+                    // Кнопка бронирования
+                    const bookButton = document.createElement('button');
+                    bookButton.innerText = 'Забронировать';
+                    bookButton.onclick = function() { bookOffice(office.number); };
+                    bookButton.style.marginRight = '5px';
+                    bookButton.style.padding = '5px 10px';
+                    bookButton.style.backgroundColor = '#4CAF50';
+                    bookButton.style.color = 'white';
+                    bookButton.style.border = 'none';
+                    bookButton.style.borderRadius = '3px';
+                    bookButton.style.cursor = 'pointer';
+                    buttonContainer.appendChild(bookButton);
+                } else {
+                    // Кнопка снятия брони
+                    const cancelButton = document.createElement('button');
+                    cancelButton.innerText = 'Освободить';
+                    cancelButton.onclick = function() { cancelOffice(office.number); };
+                    cancelButton.style.padding = '5px 10px';
+                    cancelButton.style.backgroundColor = '#f44336';
+                    cancelButton.style.color = 'white';
+                    cancelButton.style.border = 'none';
+                    cancelButton.style.borderRadius = '3px';
+                    cancelButton.style.cursor = 'pointer';
+                    buttonContainer.appendChild(cancelButton);
+                    
+                    // Добавляем к общей стоимости, если офис арендован текущим пользователем
+                    if (office.tenant === '{{ session.get("login", "") }}') {
+                        totalCost += office.price;
+                        rentedCount++;
+                    }
+                }
+
+                li.appendChild(buttonContainer);
+                ul.appendChild(li);
+            }
+
+            // Обновляем информацию об общей стоимости
+            const totalCostElement = document.getElementById('total-cost');
+            if (rentedCount > 0) {
+                totalCostElement.innerHTML = `
+                    <h3>Ваша аренда</h3>
+                    <p>Арендовано офисов: ${rentedCount}</p>
+                    <p>Общая стоимость: ${totalCost} руб./мес.</p>
+                `;
+            } else {
+                totalCostElement.innerHTML = '<p>У вас нет арендованных офисов</p>';
+            }
+        })
+        .catch(function(error) {
+            console.error('Error:', error);
+            alert('Произошла ошибка при загрузке данных');
+        });
+    }
+
+    // Функция для бронирования офиса
+    function bookOffice(officeNumber) {
+        const url = '/lab6/json-rpc-api/';
+        const json = {
+            'jsonrpc': '2.0',
+            'method': 'booking',
+            'params': officeNumber,
+            'id': Math.round(Math.random() * 1000)
+        };
+
+        fetch(url, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(json)
+        })
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(data) {
+            if (data.error) {
+                handleError(data.error);
+            } else {
+                // Обновляем список офисов
+                getOfficeList();
+            }
+        })
+        .catch(function(error) {
+            console.error('Error:', error);
+            alert('Произошла ошибка при бронировании');
+        });
+    }
+
+    // Функция для снятия брони
+    function cancelOffice(officeNumber) {
+        const url = '/lab6/json-rpc-api/';
+        const json = {
+            'jsonrpc': '2.0',
+            'method': 'cancellation',
+            'params': officeNumber,
+            'id': Math.round(Math.random() * 1000)
+        };
+
+        fetch(url, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(json)
+        })
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(data) {
+            if (data.error) {
+                handleError(data.error);
+            } else {
+                // Обновляем список офисов
+                getOfficeList();
+            }
+        })
+        .catch(function(error) {
+            console.error('Error:', error);
+            alert('Произошла ошибка при снятии брони');
+        });
+    }
+
+    // Функция для обработки ошибок
+    function handleError(error) {
+        switch(error.code) {
+            case 1:
+                alert('Вы не авторизованы. Пожалуйста, войдите в систему.');
+                break;
+            case 2:
+                alert('Этот офис уже арендован.');
+                break;
+            case 3:
+                alert('Офис не найден.');
+                break;
+            case 4:
+                alert('Офис не арендован.');
+                break;
+            case 5:
+                alert('Вы не являетесь арендатором этого офиса.');
+                break;
+            case -32601:
+                alert('Метод не найден.');
+                break;
+            default:
+                alert('Произошла ошибка: ' + error.message);
+        }
+    }
+
+    // Загружаем список офисов при загрузке страницы
+    document.addEventListener('DOMContentLoaded', function() {
+        getOfficeList();
+    });
+    
+</script>
+{% endblock %}
+
+{% block main %}
+    <h1>Аренда офисов</h1>
+    
+    {% if session.get('login') %}
+        <p>Вы вошли как: <strong>{{ session.get('name', session.get('login')) }}</strong></p>
+    {% else %}
+        <div style="background-color: #fff3cd; border: 1px solid #ffeaa7; padding: 10px; margin-bottom: 20px; border-radius: 5px;">
+            <p>⚠️ Для бронирования офисов необходимо <a href="/lab5/login">войти в систему</a>.</p>
+            <p>Если у вас нет аккаунта, вы можете <a href="/lab5/register">зарегистрироваться</a>.</p>
+        </div>
+    {% endif %}
+    
+    <div style="display: flex; gap: 20px;">
+        <div style="flex: 2;">
+            <h2>Список офисов</h2>
+            <ul id="office-list" style="list-style-type: none; padding: 0;"></ul>
+        </div>
+        
+        <div style="flex: 1;">
+            <div id="total-cost" style="background-color: #e7f3ff; padding: 15px; border-radius: 5px; border: 1px solid #b3d7ff;">
+                <h3>Ваша аренда</h3>
+                <p>У вас нет арендованных офисов</p>
+            </div>
+            
+            <div style="margin-top: 20px; background-color: #f8f9fa; padding: 15px; border-radius: 5px; border: 1px solid #e9ecef;">
+                <h3>Информация</h3>
+                <p>Всего офисов: 10</p>
+                <p>Для бронирования офиса нажмите кнопку "Забронировать".</p>
+                <p>Для освобождения офиса нажмите кнопку "Освободить".</p>
+                <button onclick="getOfficeList()" style="margin-top: 10px; padding: 8px 15px; background-color: #007bff; color: white; border: none; border-radius: 3px; cursor: pointer;">
+                    Обновить список
+                </button>
+            </div>
+        </div>
+    </div>
+{% endblock %}
