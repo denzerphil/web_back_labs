@@ -81,3 +81,14 @@ def add_film():
     
     films.append(film)
     return jsonify({"id": len(films) - 1})
+
+@lab7.route('/lab7/rest-api/films/', methods=['POST'])
+def add_film():
+    film = request.get_json()
+    
+    # Проверка описания
+    if film.get('description', '').strip() == '':
+        return jsonify({'description': 'Заполните описание'}), 400
+    
+    films.append(film)
+    return jsonify({"id": len(films) - 1})
