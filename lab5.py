@@ -47,8 +47,11 @@ def lab():
 # Регистрация
 @lab5.route('/lab5/register', methods=['GET', 'POST'])
 def register():
+    # Получаем параметр next
+    next_page = request.args.get('next', '/lab5')
+    
     if request.method == 'GET':
-        return render_template('lab5/register.html')
+        return render_template('lab5/register.html', next=next_page)
     
     login = request.form.get('login', '').strip()
     password = request.form.get('password', '')
@@ -56,10 +59,11 @@ def register():
     
     # Валидация
     if not login or not password:
-        return render_template('lab5/register.html', 
+        return render_template('lab5/register.html',
                              error='Заполните все поля',
                              login=login,
-                             name=name)
+                             name=name,
+                             next=next_page)
     
     # Подключаемся к БД
     conn, cur = db_connect()
@@ -72,66 +76,88 @@ def register():
     
     if cur.fetchone():
         db_close(conn, cur)
-        return render_template('lab5/register.html', 
+        return render_template('lab5/register.html',
                              error='Такой пользователь уже существует',
                              login=login,
-                             name=name)
+                             name=name,
+                             next=next_page)
     
     # Хешируем пароль
     password_hash = generate_password_hash(password)
     
     # Добавляем пользователя в БД
     if current_app.config['DB_TYPE'] == 'postgres':
-        cur.execute("INSERT INTO users (login, password, name) VALUES (%s, %s, %s)", 
+        cur.execute("INSERT INTO users (login, password, name) VALUES (%s, %s, %s)",
                    (login, password_hash, name))
     else:
-        cur.execute("INSERT INTO users (login, password, name) VALUES (?, ?, ?)", 
+        cur.execute("INSERT INTO users (login, password, name) VALUES (?, ?, ?)",
                    (login, password_hash, name))
     
     db_close(conn, cur)
-    return render_template('lab5/success.html', 
-                         message='Регистрация успешна!',
-                         login=login)
+    
+    # Автоматически входим после регистрации
+    session['login'] = login
+    session['name'] = name if name else login
+    
+    # Получаем ID пользователя
+    conn, cur = db_connect()
+    if current_app.config['DB_TYPE'] == 'postgres':
+        cur.execute("SELECT id FROM users WHERE login=%s;", (login,))
+    else:
+        cur.execute("SELECT id FROM users WHERE login=?;", (login,))
+    user = cur.fetchone()
+    if user:
+        session['user_id'] = user[0] if isinstance(user, tuple) else user['id']
+    db_close(conn, cur)
+    
+    # Редирект на страницу, указанную в next
+    return redirect(next_page)
 
 # Вход в систему
 @lab5.route('/lab5/login', methods=['GET', 'POST'])
 def login():
-    if request.method == 'GET':
-        return render_template('lab5/login.html')
+    # Получаем параметр next (куда вернуться после авторизации)
+    next_page = request.args.get('next', '/lab5')
     
-    login = request.form.get('login', '').strip()
+    if request.method == 'GET':
+        return render_template('lab5/login.html', next=next_page)
+    
+    login_user = request.form.get('login', '').strip()
     password = request.form.get('password', '')
     
-    if not login or not password:
-        return render_template('lab5/login.html', 
+    if not login_user or not password:
+        return render_template('lab5/login.html',
                              error='Заполните все поля',
-                             login=login)
+                             login=login_user,
+                             next=next_page)
     
     # Подключаемся к БД
     conn, cur = db_connect()
     
     # Ищем пользователя
     if current_app.config['DB_TYPE'] == 'postgres':
-        cur.execute("SELECT * FROM users WHERE login=%s;", (login,))
+        cur.execute("SELECT * FROM users WHERE login=%s;", (login_user,))
     else:
-        cur.execute("SELECT * FROM users WHERE login=?;", (login,))
+        cur.execute("SELECT * FROM users WHERE login=?;", (login_user,))
     
     user = cur.fetchone()
     
     if not user:
         db_close(conn, cur)
-        return render_template('lab5/login.html', 
+        return render_template('lab5/login.html',
                              error='Логин и/или пароль неверны',
-                             login=login)
+                             login=login_user,
+                             next=next_page)
     
     # Проверяем пароль
     if isinstance(user, dict):
         # PostgreSQL
         if not check_password_hash(user['password'], password):
             db_close(conn, cur)
-            return render_template('lab5/login.html', 
+            return render_template('lab5/login.html',
                                  error='Логин и/или пароль неверны',
-                                 login=login)
+                                 login=login_user,
+                                 next=next_page)
         
         # Сохраняем данные в сессии
         session['login'] = user['login']
@@ -141,9 +167,10 @@ def login():
         # SQLite
         if not check_password_hash(user['password'], password):
             db_close(conn, cur)
-            return render_template('lab5/login.html', 
+            return render_template('lab5/login.html',
                                  error='Логин и/или пароль неверны',
-                                 login=login)
+                                 login=login_user,
+                                 next=next_page)
         
         # Сохраняем данные в сессии
         session['login'] = user['login']
@@ -151,7 +178,8 @@ def login():
         session['name'] = user['name'] if user['name'] else user['login']
     
     db_close(conn, cur)
-    return redirect('/lab5')
+    # Редирект на страницу, указанную в next, или на /lab5 по умолчанию
+    return redirect(next_page)
 
 # Выход из системы
 @lab5.route('/lab5/logout')

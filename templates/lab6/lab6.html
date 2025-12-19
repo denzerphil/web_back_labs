@@ -214,8 +214,12 @@
         <p>Вы вошли как: <strong>{{ session.get('name', session.get('login')) }}</strong></p>
     {% else %}
         <div style="background-color: #fff3cd; border: 1px solid #ffeaa7; padding: 10px; margin-bottom: 20px; border-radius: 5px;">
-            <p>⚠️ Для бронирования офисов необходимо <a href="/lab5/login">войти в систему</a>.</p>
-            <p>Если у вас нет аккаунта, вы можете <a href="/lab5/register">зарегистрироваться</a>.</p>
+            <p>⚠️ Для бронирования офисов необходимо 
+                <a href="/lab5/login?next=/lab6/">войти в систему</a>.
+            </p>
+            <p>Если у вас нет аккаунта, вы можете 
+                <a href="/lab5/register?next=/lab6/">зарегистрироваться</a>.
+            </p>
         </div>
     {% endif %}
     
