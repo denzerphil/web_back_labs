@@ -92,3 +92,36 @@ def add_film():
     
     films.append(film)
     return jsonify({"id": len(films) - 1})
+
+@lab7.route('/lab7/rest-api/films/<int:id>', methods=['PUT'])
+def put_film(id):
+    if id < 0 or id >= len(films):
+        return jsonify({"error": "Film not found"}), 404
+    
+    film = request.get_json()
+    
+    # Если оригинальное название пустое, а русское задано - копируем русское
+    if film.get('title', '').strip() == '' and film.get('title_ru', '').strip() != '':
+        film['title'] = film['title_ru']
+    
+    # Проверка описания
+    if film.get('description', '').strip() == '':
+        return jsonify({'description': 'Заполните описание'}), 400
+    
+    films[id] = film
+    return jsonify(films[id])
+
+@lab7.route('/lab7/rest-api/films/', methods=['POST'])
+def add_film():
+    film = request.get_json()
+    
+    # Если оригинальное название пустое, а русское задано - копируем русское
+    if film.get('title', '').strip() == '' and film.get('title_ru', '').strip() != '':
+        film['title'] = film['title_ru']
+    
+    # Проверка описания
+    if film.get('description', '').strip() == '':
+        return jsonify({'description': 'Заполните описание'}), 400
+    
+    films.append(film)
+    return jsonify({"id": len(films) - 1})

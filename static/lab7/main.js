@@ -14,19 +14,28 @@ function fillFilmList() {
                 let tdTitleRus = document.createElement('td');
                 let tdYear = document.createElement('td');
                 let tdActions = document.createElement('td');
+                tdActions.className = 'actions-cell';
                 
-                tdTitle.innerText = films[i].title == films[i].title_ru ? '' : films[i].title;
+                // Оригинальное название курсивом, если оно отличается от русского
+                if (films[i].title && films[i].title !== films[i].title_ru) {
+                    tdTitle.innerHTML = `<span class="original-title">${films[i].title}</span>`;
+                } else {
+                    tdTitle.innerHTML = '<span class="original-title">—</span>';
+                }
+                
                 tdTitleRus.innerText = films[i].title_ru;
                 tdYear.innerText = films[i].year;
                 
                 let editButton = document.createElement('button');
-                editButton.innerText = 'редактировать';
+                editButton.className = 'edit-btn';
+                editButton.innerText = 'Редактировать';
                 editButton.onclick = function() {
                     editFilm(i);
                 };
                 
                 let delButton = document.createElement('button');
-                delButton.innerText = 'удалить';
+                delButton.className = 'delete-btn';
+                delButton.innerText = 'Удалить';
                 delButton.onclick = function() {
                     deleteFilm(i, films[i].title_ru);
                 };
@@ -123,4 +132,27 @@ function editFilm(id) {
             document.getElementById('description_error').innerText = "";
             showModal();
         });
+}
+
+function showModal() {
+    document.getElementById('film-modal').style.display = 'block';
+}
+
+function hideModal() {
+    document.getElementById('film-modal').style.display = 'none';
+}
+
+function cancel() {
+    hideModal();
+}
+
+function addFilm() {
+    document.getElementById('modal-title').innerText = 'Добавить фильм';
+    document.getElementById('id').value = "";
+    document.getElementById('title').value = "";
+    document.getElementById('title_ru').value = "";
+    document.getElementById('year').value = "";
+    document.getElementById('description').value = "";
+    document.getElementById('description_error').innerText = "";
+    showModal();
 }
