@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 7{% endblock %}
+
+{% block script %}
+{% endblock %}
+
+{% block main %}
+    <h1>Список фильмов</h1>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Название</th>
+                <th>Год</th>
+                <th>Действие</th>
+            </tr>
+        </thead>
+        <tbody id="film-list"></tbody>
+    </table>
+    
+    <div>
+        <button onclick="addFilm()">Добавить фильм</button>
+    </div>
+{% endblock %}

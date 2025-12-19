@@ -10,7 +10,8 @@ from lab2 import lab2
 from lab3 import lab3
 from lab4 import lab4
 from lab5 import lab5
-from lab6 import lab6  # <-- Добавляем импорт lab6
+from lab6 import lab6
+from lab7 import lab7  # <-- Добавляем импорт lab7
 
 # Регистрируем blueprint'ы
 app.register_blueprint(lab1)
@@ -18,7 +19,8 @@ app.register_blueprint(lab2)
 app.register_blueprint(lab3)
 app.register_blueprint(lab4)
 app.register_blueprint(lab5)
-app.register_blueprint(lab6)  # <-- Регистрируем lab6
+app.register_blueprint(lab6)
+app.register_blueprint(lab7)  # <-- Регистрируем lab7
 
 @app.route("/")
 @app.route("/index")
@@ -41,7 +43,8 @@ def index():
                 <li><a href="/lab3/">Третья лабораторная</a></li>
                 <li><a href="/lab4/">Четвёртая лабораторная</a></li>
                 <li><a href="/lab5/">Пятая лабораторная</a></li>
-                <li><a href="/lab6/">Шестая лабораторная</a></li> <!-- <-- Добавляем ссылку -->
+                <li><a href="/lab6/">Шестая лабораторная</a></li>
+                <li><a href="/lab7/">Седьмая лабораторная</a></li> <!-- <-- Добавляем ссылку -->
             </ul>
         </nav>
        
@@ -52,6 +55,7 @@ def index():
     </body>
 </html>
 '''
+# ... остальной код без изменений
 
 @app.route('/400')
 def bad_request():
