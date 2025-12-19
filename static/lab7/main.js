@@ -108,3 +108,19 @@ function sendFilm() {
         }
     });
 }
+
+function editFilm(id) {
+    fetch(`/lab7/rest-api/films/${id}`)
+        .then(function(data) {
+            return data.json();
+        })
+        .then(function(film) {
+            document.getElementById('id').value = id;
+            document.getElementById('title').value = film.title;
+            document.getElementById('title_ru').value = film.title_ru;
+            document.getElementById('year').value = film.year;
+            document.getElementById('description').value = film.description;
+            document.getElementById('description_error').innerText = "";
+            showModal();
+        });
+}
