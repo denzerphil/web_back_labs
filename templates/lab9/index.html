@@ -1,0 +1,356 @@
+{% extends "lab9/base.html" %}
+
+{% block lab %}Лабораторная работа 9 - Новогодние подарки{% endblock %}
+
+{% block script %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Статистика
+        const openedCount = {{ opened_count }};
+        const remainingGifts = {{ remaining_gifts }};
+        
+        // Обновляем статистику
+        document.getElementById('opened-count').textContent = openedCount;
+        document.getElementById('remaining-gifts').textContent = remainingGifts;
+        
+        // Обработчики для коробок
+        const giftBoxes = document.querySelectorAll('.gift-box');
+        
+        giftBoxes.forEach(box => {
+            box.addEventListener('click', function() {
+                const positionId = this.dataset.positionId;
+                const isOpened = this.classList.contains('opened');
+                
+                if (isOpened) {
+                    showMessage('Этот подарок уже открыт!', 'warning');
+                    return;
+                }
+                
+                openGift(positionId);
+            });
+        });
+        
+        // Кнопка "Дед Мороз" (только для авторизованных)
+        const santaBtn = document.getElementById('santa-btn');
+        if (santaBtn) {
+            santaBtn.addEventListener('click', resetGifts);
+        }
+        
+        // Модальное окно
+        const modal = document.getElementById('gift-modal');
+        const closeBtn = document.querySelector('.close-modal');
+        
+        if (closeBtn) {
+            closeBtn.addEventListener('click', function() {
+                modal.style.display = 'none';
+            });
+        }
+        
+        window.addEventListener('click', function(event) {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+    });
+    
+    function openGift(positionId) {
+        fetch('/lab9/open_gift', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ position_id: parseInt(positionId) })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                if (data.requires_login) {
+                    // Предложить авторизоваться
+                    if (confirm(data.message + '\n\nХотите перейти на страницу входа?')) {
+                        window.location.href = '/lab8/login?next=/lab9/';
+                    }
+                } else {
+                    showMessage(data.message, 'error');
+                }
+                return;
+            }
+            
+            // Обновляем интерфейс
+            const box = document.querySelector(`.gift-box[data-position-id="${positionId}"]`);
+            if (box) {
+                box.classList.add('opened');
+                box.innerHTML = `
+                    <div class="gift-opened">
+                        <i class="fas fa-gift opened-icon"></i>
+                        <div class="gift-name">${data.gift.name}</div>
+                    </div>
+                `;
+            }
+            
+            // Обновляем статистику
+            document.getElementById('opened-count').textContent = data.opened_count;
+            document.getElementById('remaining-gifts').textContent = data.remaining_gifts;
+            
+            // Показываем модальное окно с подарком
+            showGiftModal(data.gift);
+            
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showMessage('Ошибка при открытии подарка', 'error');
+        });
+    }
+    
+    function showGiftModal(gift) {
+        const modal = document.getElementById('gift-modal');
+        const modalContent = document.getElementById('modal-content');
+        
+        modalContent.innerHTML = `
+            <div class="gift-reveal">
+                <div class="gift-image">
+                    <i class="fas fa-gift gift-icon-large"></i>
+                </div>
+                <h2>${gift.name}</h2>
+                <p class="gift-message">${gift.message}</p>
+                <p class="gift-type">
+                    <i class="fas fa-${gift.type === 'special' ? 'star' : 'gift'}"></i>
+                    ${gift.type === 'special' ? 'Особый подарок' : 'Обычный подарок'}
+                </p>
+                <button class="btn btn-primary close-gift-btn">Закрыть</button>
+            </div>
+        `;
+        
+        modal.style.display = 'block';
+        
+        // Обработчик для кнопки закрытия
+        document.querySelector('.close-gift-btn')?.addEventListener('click', function() {
+            modal.style.display = 'none';
+        });
+    }
+    
+    function resetGifts() {
+        if (!confirm('Дед Мороз восстановит все подарки. Вы уверены?')) {
+            return;
+        }
+        
+        fetch('/lab9/reset_gifts', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showMessage(data.message, 'success');
+                setTimeout(() => {
+                    location.reload();
+                }, 1500);
+            } else {
+                showMessage('Ошибка при восстановлении подарков', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showMessage('Ошибка при восстановлении подарков', 'error');
+        });
+    }
+    
+    function showMessage(message, type = 'info') {
+        // Создаем элемент для сообщения
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${type}`;
+        messageDiv.textContent = message;
+        messageDiv.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            color: white;
+            z-index: 1000;
+            min-width: 300px;
+            max-width: 400px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            animation: slideIn 0.3s ease;
+        `;
+        
+        // Цвета в зависимости от типа
+        const colors = {
+            'success': '#4CAF50',
+            'error': '#F44336',
+            'warning': '#FF9800',
+            'info': '#2196F3'
+        };
+        
+        messageDiv.style.backgroundColor = colors[type] || colors.info;
+        
+        document.body.appendChild(messageDiv);
+        
+        // Автоматическое удаление через 5 секунд
+        setTimeout(() => {
+            messageDiv.style.animation = 'slideOut 0.3s ease';
+            setTimeout(() => {
+                if (messageDiv.parentNode) {
+                    messageDiv.parentNode.removeChild(messageDiv);
+                }
+            }, 300);
+        }, 5000);
+    }
+    
+    // Добавляем стили для анимаций
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+    `;
+    document.head.appendChild(style);
+</script>
+{% endblock %}
+
+{% block main %}
+<div class="new-year-container">
+    <h1 class="main-title">
+        <i class="fas fa-tree"></i>
+        Новогодние Подарки
+        <i class="fas fa-tree"></i>
+    </h1>
+    
+    <div class="subtitle">
+        Откройте до 3 подарков и получите новогодние поздравления!
+    </div>
+    
+    <!-- Статистика -->
+    <div class="stats-container">
+        <div class="stat-box">
+            <div class="stat-icon">
+                <i class="fas fa-gift"></i>
+            </div>
+            <div class="stat-info">
+                <div class="stat-value" id="opened-count">0</div>
+                <div class="stat-label">Открыто подарков</div>
+            </div>
+        </div>
+        
+        <div class="stat-box">
+            <div class="stat-icon">
+                <i class="fas fa-box-open"></i>
+            </div>
+            <div class="stat-info">
+                <div class="stat-value" id="remaining-gifts">10</div>
+                <div class="stat-label">Осталось подарков</div>
+            </div>
+        </div>
+        
+        <div class="stat-box">
+            <div class="stat-icon">
+                <i class="fas fa-user"></i>
+            </div>
+            <div class="stat-info">
+                <div class="stat-value">
+                    {% if current_user.is_authenticated %}
+                        <i class="fas fa-check-circle" style="color: #4CAF50;"></i>
+                    {% else %}
+                        <i class="fas fa-times-circle" style="color: #F44336;"></i>
+                    {% endif %}
+                </div>
+                <div class="stat-label">
+                    {% if current_user.is_authenticated %}
+                        Авторизован
+                    {% else %}
+                        Не авторизован
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Кнопка Дед Мороз (только для авторизованных) -->
+    {% if current_user.is_authenticated %}
+    <div class="santa-section">
+        <button id="santa-btn" class="santa-btn">
+            <i class="fas fa-sleigh"></i>
+            Вызвать Деда Мороза
+            <i class="fas fa-hat-wizard"></i>
+        </button>
+        <p class="santa-hint">
+            Дед Мороз восстановит все подарки, чтобы вы могли открыть их снова!
+        </p>
+    </div>
+    {% else %}
+    <div class="auth-notice">
+        <p>
+            <i class="fas fa-info-circle"></i>
+            Некоторые особые подарки доступны только авторизованным пользователям.
+            <a href="/lab8/login?next=/lab9/">Войдите</a> или 
+            <a href="/lab8/register?next=/lab9/">зарегистрируйтесь</a>.
+        </p>
+    </div>
+    {% endif %}
+    
+    <!-- Игровое поле с подарками -->
+    <div class="game-field">
+        <div class="gifts-container">
+            {% for gift in gifts %}
+            <div class="gift-box {% if gift.opened %}opened{% endif %}" 
+                 data-position-id="{{ gift.id }}"
+                 style="top: {{ gift.top }}%; left: {{ gift.left }}%;">
+                
+                {% if gift.opened %}
+                <div class="gift-opened">
+                    <i class="fas fa-gift opened-icon"></i>
+                    <div class="gift-name">
+                        {{ gifts_data.gifts[gift.gift_id].name }}
+                    </div>
+                </div>
+                {% else %}
+                <div class="gift-closed">
+                    <i class="fas fa-gift closed-icon"></i>
+                    <div class="gift-number">{{ gift.id }}</div>
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <!-- Инструкция -->
+    <div class="instructions">
+        <h3><i class="fas fa-info-circle"></i> Как играть:</h3>
+        <ul>
+            <li>Нажмите на любую коробку с подарком, чтобы открыть её</li>
+            <li>Вы можете открыть не более 3 подарков</li>
+            <li>Каждый подарок содержит уникальное поздравление</li>
+            <li>Особые подарки (со звёздочкой) доступны только авторизованным пользователям</li>
+            <li>Авторизованные пользователи могут восстановить все подарки с помощью Деда Мороза</li>
+        </ul>
+    </div>
+</div>
+
+<!-- Модальное окно для подарка -->
+<div id="gift-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <div id="modal-content"></div>
+    </div>
+</div>
+{% endblock %}
