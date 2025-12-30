@@ -1,0 +1,64 @@
+{% extends "lab8/base.html" %}
+
+{% block lab %}Лабораторная работа 8{% endblock %}
+
+{% block main %}
+<h1>База знаний</h1>
+<div class="user-info">
+    {% if current_user.is_authenticated %}
+        <p>Вы вошли как: <strong>{{ current_user.login }}</strong></p>
+    {% else %}
+        <p>Вы вошли как: <strong>anonymous</strong></p>
+    {% endif %}
+</div>
+
+<div class="navigation">
+    {% if not current_user.is_authenticated %}
+        <a href="/lab8/login" class="nav-btn">
+            <i class="fas fa-sign-in-alt"></i> Вход
+        </a>
+        <a href="/lab8/register" class="nav-btn">
+            <i class="fas fa-user-plus"></i> Регистрация
+        </a>
+    {% else %}
+        <a href="/lab8/articles" class="nav-btn">
+            <i class="fas fa-list"></i> Список статей
+        </a>
+        <a href="/lab8/create" class="nav-btn">
+            <i class="fas fa-plus"></i> Создать статью
+        </a>
+        <a href="/lab8/logout" class="nav-btn">
+            <i class="fas fa-sign-out-alt"></i> Выход
+        </a>
+    {% endif %}
+    <a href="/lab8/search" class="nav-btn">
+        <i class="fas fa-search"></i> Поиск статей
+    </a>
+</div>
+
+<div class="about">
+    <h3>О проекте</h3>
+    <p>Это сервис базы знаний с использованием ORM (Object Relation Model).</p>
+    <p>Возможности:</p>
+    <ul>
+        <li>Регистрация и авторизация пользователей с Flask-Login</li>
+        <li>Создание, редактирование и удаление статей</li>
+        <li>Публикация статей для общего доступа</li>
+        <li>Добавление статей в избранное</li>
+        <li>Поиск по статьям (регистронезависимый)</li>
+        <li>Использование SQLAlchemy для работы с БД</li>
+        <li>Поддержка PostgreSQL и SQLite</li>
+    </ul>
+</div>
+
+<div class="tech-info">
+    <h3>Техническая информация</h3>
+    <p><strong>Используемые технологии:</strong></p>
+    <ul>
+        <li>Flask-SQLAlchemy для ORM</li>
+        <li>Flask-Login для управления сессиями</li>
+        <li>Werkzeug для хеширования паролей</li>
+        <li>SQLite для локальной разработки</li>
+    </ul>
+</div>
+{% endblock %}
