@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Скрипт для инициализации базы данных для лабораторной работы 8.
-Создаёт файл ivan_ivanov_orm.db и таблицы через SQLAlchemy.
+Создаёт файл den_filippov_orm.db и таблицы через SQLAlchemy.
 """
 import os
 from app import app
@@ -34,7 +34,7 @@ def init_lab8_db():
             print(f"Добавлены тестовые пользователи: {len(test_users)}")
         
         print("База данных для лабораторной работы 8 готова!")
-        print(f"Файл: ivan_ivanov_orm.db")
+        print(f"Файл: den_filippov_orm.db")
 
 if __name__ == "__main__":
     init_lab8_db()
