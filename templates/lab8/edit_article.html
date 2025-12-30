@@ -1,0 +1,48 @@
+{% extends "lab8/base.html" %}
+
+{% block lab %}Лабораторная работа 8 - Редактирование статьи{% endblock %}
+
+{% block main %}
+<h1>Редактирование статьи</h1>
+
+{% if error %}
+<div class="error">{{ error }}</div>
+{% endif %}
+
+<form action="/lab8/edit/{{ article.id }}" method="post" class="form-container">
+    <div class="form-group">
+        <label for="title">Название статьи:</label>
+        <input type="text" id="title" name="title" required class="form-control" 
+               maxlength="50" value="{{ article.title }}">
+    </div>
+
+    <div class="form-group">
+        <label for="article_text">Текст статьи:</label>
+        <textarea id="article_text" name="article_text" required class="form-control" 
+                  rows="10">{{ article.article_text }}</textarea>
+    </div>
+
+    <div class="form-group">
+        <label class="checkbox-label">
+            <input type="checkbox" name="is_favorite" {% if article.is_favorite %}checked{% endif %}>
+            В избранном
+        </label>
+    </div>
+
+    <div class="form-group">
+        <label class="checkbox-label">
+            <input type="checkbox" name="is_public" {% if article.is_public %}checked{% endif %}>
+            Публичная статья
+        </label>
+    </div>
+
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">
+            <i class="fas fa-save"></i> Сохранить изменения
+        </button>
+        <a href="/lab8/articles" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Назад к списку
+        </a>
+    </div>
+</form>
+{% endblock %}

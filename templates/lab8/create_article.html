@@ -1,0 +1,49 @@
+{% extends "lab8/base.html" %}
+
+{% block lab %}Лабораторная работа 8 - Создание статьи{% endblock %}
+
+{% block main %}
+<h1>Создание новой статьи</h1>
+
+{% if error %}
+<div class="error">{{ error }}</div>
+{% endif %}
+
+<form action="/lab8/create" method="post" class="form-container">
+    <div class="form-group">
+        <label for="title">Название статьи:</label>
+        <input type="text" id="title" name="title" required class="form-control" 
+               maxlength="50" placeholder="Введите название статьи (макс. 50 символов)">
+    </div>
+
+    <div class="form-group">
+        <label for="article_text">Текст статьи:</label>
+        <textarea id="article_text" name="article_text" required class="form-control" 
+                  rows="10" placeholder="Введите текст статьи"></textarea>
+    </div>
+
+    <div class="form-group">
+        <label class="checkbox-label">
+            <input type="checkbox" name="is_favorite">
+            Добавить в избранное
+        </label>
+    </div>
+
+    <div class="form-group">
+        <label class="checkbox-label">
+            <input type="checkbox" name="is_public">
+            Сделать публичной
+        </label>
+        <small>Публичные статьи видны всем пользователям</small>
+    </div>
+
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">
+            <i class="fas fa-save"></i> Создать статью
+        </button>
+        <a href="/lab8/articles" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Назад к списку
+        </a>
+    </div>
+</form>
+{% endblock %}
